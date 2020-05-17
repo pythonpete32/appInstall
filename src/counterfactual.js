@@ -25,7 +25,7 @@ async function calculateNewProxyAddress(daoAddress, nonce) {
 const provider = ethers.getDefaultProvider('rinkeby');
 const dao = '0x57d9481D50c6c519fa5E20BDa46b2d817504D354' // permissionsworkshop.aragonid.eth
 
-buildNonceForAddress(dao, 0, provider).then(nonce => {
+buildNonceForAddress(dao, 1, provider).then(nonce => {
   console.log('nonce:', nonce)
   calculateNewProxyAddress(dao, nonce).then(addr => {
     console.log('app address:', addr)

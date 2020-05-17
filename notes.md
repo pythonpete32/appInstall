@@ -11,6 +11,9 @@ Tx-2:
     create permission [inboxVoting, MODIFY_SUPPORT_ROLE, sabVoting, sabVoting]
     create permission [inboxVoting, MODIFY_QUORUM_ROLE, sabVoting, sabVoting]
 
+I think in tx-2 we need to do a couple more grants and revokes
+We'll need to assign inboxVoting the ability to create votes on comVoting, and its create votes should be given to the Inbox Voting Aggregator.
+
 ```bash
 f='--env aragon:rinkeby --use-frame'
 dao=0x026458457372841C80e44A5B016fc015f45d2355
