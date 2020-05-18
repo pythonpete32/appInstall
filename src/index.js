@@ -24,6 +24,7 @@ const sabVoting = '0x0206d6d8225893cdc743c948f1e5ab99d244a270';
 const comToken = '0x4Ff930e512426BFb85B6879A6523D32ef2DFA4C2';
 const votingAggregatorAppId =
     '0xb7e96a57761ff614ad73fad84d9e7f8237911cfe4c0b4c0c2e95e5cc80fd43f3';
+const votingAggregatorBase = '0xa29B22647Dde5Cee19eF578700fEC448Bc10d951';
 
 const newAppInstanceSignature = 'newAppInstance(bytes32,address,bytes,bool)';
 const createPermissionSignature =
@@ -70,7 +71,7 @@ async function firstTx() {
     const calldatum = await Promise.all([
         encodeActCall(newAppInstanceSignature, [
             votingAggregatorAppId,
-            votingAggregator,
+            votingAggregatorBase,
             aggregatorInitPayload,
             false,
         ]),
