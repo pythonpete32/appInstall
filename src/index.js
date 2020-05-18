@@ -33,6 +33,8 @@ const votingAggregatorBase = '0xa29B22647Dde5Cee19eF578700fEC448Bc10d951';
 const votingAppId =
     '0x9fa3927f639745e587912d4b0fea7ef9013bf93fb907d29faeab57417ba6e1d4';
 const votingBase = '0xb4fa71b3352D48AA93D34d085f87bb4aF0cE6Ab5';
+let votingAggregator;
+let inbox;
 
 // signatures
 const newAppInstanceSignature = 'newAppInstance(bytes32,address,bytes,bool)';
@@ -65,7 +67,7 @@ async function firstTx() {
     // counterfactual addresses
     const nonce = await buildNonceForAddress(dao, 0, provider);
     const newAddress = await calculateNewProxyAddress(dao, nonce);
-    const votingAggregator = newAddress;
+    votingAggregator = newAddress;
 
     // app initialisation payloads
     const aggregatorInitPayload = await encodeActCall(aggregatorInitSignature, [
@@ -153,14 +155,14 @@ async function secondTx() {
     // counterfactual addresses
     const nonce = await buildNonceForAddress(dao, 0, provider);
     const newAddress = await calculateNewProxyAddress(dao, nonce);
-    const inbox = newAddress;
+    inbox = newAddress;
 
     // function signatures
     const inboxInitSignature = 'initialize(address,uint64,uint64,uint64)';
 
     // app initialisation payloads
     const inboxInitPayload = await encodeActCall(inboxInitSignature, [
-        comToken,
+        votingAggregator,
         BN('250000000000000000'),
         BN('10000000000000000'),
         604800,
@@ -263,7 +265,7 @@ async function secondTx() {
 
 const main = async () => {
     await firstTx();
-    // await secondTx();
+    await secondTx();
 };
 
 main()
