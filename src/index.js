@@ -167,7 +167,7 @@ async function secondTx() {
     //  1. the first encodeActCall, the last argument is true because it is a standard app?
     const calldatum = await Promise.all([
         encodeActCall(newAppInstanceSignature, [
-            votingAggregatorAppId,
+            votingAppId,
             votingBase,
             inboxInitPayload,
             true,
