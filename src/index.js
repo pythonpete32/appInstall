@@ -40,7 +40,8 @@ let inbox;
 const newAppInstanceSignature = 'newAppInstance(bytes32,address,bytes,bool)';
 const createPermissionSignature =
     'createPermission(address,address,bytes32,address)';
-const grantSignature = 'grantPermission(address,address,bytes32)';
+const grantPermissionSignature = 'grantPermission(address,address,bytes32)';
+const revokePermissionSignature = 'revokePermission(address,address,bytes32)';
 const aggregatorInitSignature = 'initialize(string,string,uint8)';
 const addPowerSourceSignature = 'addPowerSource(address,uint8,uint256)';
 
@@ -191,17 +192,22 @@ async function secondTx() {
             keccak256('MODIFY_QUORUM_ROLE'),
             sabVoting,
         ]),
-        encodeActCall(grantSignature, [
-            comManager,
+        encodeActCall(grantPermissionSignature, [
+            inbox,
             comVoting,
             keccak256('CREATE_VOTES_ROLE'),
         ]),
-        encodeActCall(grantSignature, [
-            inbox,
+        encodeActCall(grantPermissionSignature, [
+            comVoting,
             finance,
             keccak256('CREATE_PAYMENTS_ROLE'),
         ]),
-        encodeActCall(grantSignature, [
+        encodeActCall(grantPermissionSignature, [
+            comVoting,
+            finance,
+            keccak256('EXECUTE_PAYMENTS_ROLE'),
+        ]),
+        encodeActCall(revokePermissionSignature, [
             sabVoting,
             finance,
             keccak256('EXECUTE_PAYMENTS_ROLE'),
@@ -240,8 +246,12 @@ async function secondTx() {
             calldata: calldatum[6],
         },
         {
-            to: votingAggregator,
+            to: acl,
             calldata: calldatum[7],
+        },
+        {
+            to: votingAggregator,
+            calldata: calldatum[8],
         },
     ];
 
