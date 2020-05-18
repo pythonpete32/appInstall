@@ -22,17 +22,25 @@ const dao = '0x9dd734B6cE698503bb24FB2F27c9E69491E6F6C5';
 const acl = '0x3b423a82baaadabdbd2920623daf544afc1c4305';
 const sabVoting = '0x0206d6d8225893cdc743c948f1e5ab99d244a270';
 const comToken = '0x4Ff930e512426BFb85B6879A6523D32ef2DFA4C2';
+const comManager = '0x05ee4307514d9610d10897e89f6f0f25abdf8bef';
+const comVoting = '0xdeb594364932703953e9b250f57a49e0c8d64420';
+const finance = '0xf391ab2ba9380486c9dff0a23972848a4c16e23f';
+
+// new apps
 const votingAggregatorAppId =
     '0xb7e96a57761ff614ad73fad84d9e7f8237911cfe4c0b4c0c2e95e5cc80fd43f3';
 const votingAggregatorBase = '0xa29B22647Dde5Cee19eF578700fEC448Bc10d951';
-
 const votingAppId =
     '0x9fa3927f639745e587912d4b0fea7ef9013bf93fb907d29faeab57417ba6e1d4';
 const votingBase = '0xb4fa71b3352D48AA93D34d085f87bb4aF0cE6Ab5';
+
+// signatures
 const newAppInstanceSignature = 'newAppInstance(bytes32,address,bytes,bool)';
 const createPermissionSignature =
     'createPermission(address,address,bytes32,address)';
 const grantSignature = 'grantPermission(address,address,bytes32)';
+const aggregatorInitSignature = 'initialize(string,string,uint8)';
+const addPowerSourceSignature = 'addPowerSource(address,uint8,uint256)';
 
 // functions for counterfactual addresses
 async function buildNonceForAddress(address, index, provider) {
@@ -58,10 +66,6 @@ async function firstTx() {
     const nonce = await buildNonceForAddress(dao, 0, provider);
     const newAddress = await calculateNewProxyAddress(dao, nonce);
     const votingAggregator = newAddress;
-
-    // function signatures
-    const aggregatorInitSignature = 'initialize(string,string,uint8)';
-    const addPowerSourceSignature = 'addPowerSource(address,uint8,uint256)';
 
     // app initialisation payloads
     const aggregatorInitPayload = await encodeActCall(aggregatorInitSignature, [
@@ -173,7 +177,7 @@ async function secondTx() {
             true,
         ]),
         encodeActCall(createPermissionSignature, [
-            sabVoting,
+            comManager,
             inbox,
             keccak256('CREATE_VOTES_ROLE'),
             sabVoting,
@@ -189,6 +193,21 @@ async function secondTx() {
             inbox,
             keccak256('MODIFY_QUORUM_ROLE'),
             sabVoting,
+        ]),
+        encodeActCall(grantSignature, [
+            comManager,
+            comVoting,
+            keccak256('CREATE_VOTES_ROLE'),
+        ]),
+        encodeActCall(grantSignature, [
+            inbox,
+            finance,
+            keccak256('CREATE_PAYMENTS_ROLE'),
+        ]),
+        encodeActCall(grantSignature, [
+            sabVoting,
+            finance,
+            keccak256('EXECUTE_PAYMENTS_ROLE'),
         ]),
     ]);
 
@@ -210,7 +229,20 @@ async function secondTx() {
             to: acl,
             calldata: calldatum[3],
         },
+        {
+            to: acl,
+            calldata: calldatum[4],
+        },
+        {
+            to: acl,
+            calldata: calldatum[5],
+        },
+        {
+            to: acl,
+            calldata: calldatum[6],
+        },
     ];
+
     const script = encodeCallScript(actions);
 
     await execAppMethod(
@@ -231,7 +263,7 @@ async function secondTx() {
 
 const main = async () => {
     await firstTx();
-    await secondTx();
+    // await secondTx();
 };
 
 main()
