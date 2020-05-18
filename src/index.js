@@ -102,7 +102,6 @@ async function firstTx() {
             keccak256('MANAGE_WEIGHTS_ROLE'),
             sabVoting,
         ]),
-        encodeActCall(addPowerSourceSignature, [comToken, 1, 1]),
     ]);
 
     // Encode all actions into a single EVM script.
@@ -122,10 +121,6 @@ async function firstTx() {
         {
             to: acl,
             calldata: calldatum[3],
-        },
-        {
-            to: votingAggregator,
-            calldata: calldatum[4],
         },
     ];
     const script = encodeCallScript(actions);
@@ -211,6 +206,7 @@ async function secondTx() {
             finance,
             keccak256('EXECUTE_PAYMENTS_ROLE'),
         ]),
+        encodeActCall(addPowerSourceSignature, [comToken, 1, 1]),
     ]);
 
     // Encode all actions into a single EVM script.
@@ -242,6 +238,10 @@ async function secondTx() {
         {
             to: acl,
             calldata: calldatum[6],
+        },
+        {
+            to: votingAggregator,
+            calldata: calldatum[7],
         },
     ];
 
