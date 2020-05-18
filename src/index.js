@@ -18,10 +18,10 @@ const env = 'rinkeby'; // this is how you set env
 
 // DAO addresses
 // https://rinkeby.aragon.org/#/azsxdc123
-const dao = '0x8824e6954784af03DFA32dC70950B51DdEb1c486';
-const acl = '0x07a7bceeb553b1b1bc0280e5be5274c4715da015';
-const sabVoting = '0x22d4f192bb786fe66f6af544be7f157adb040d21';
-const comToken = '0xC50771d3C5D49E42507175bca8D13Ed50ab1BC3F';
+const dao = '0x9dd734B6cE698503bb24FB2F27c9E69491E6F6C5';
+const acl = '0x3b423a82baaadabdbd2920623daf544afc1c4305';
+const sabVoting = '0x0206d6d8225893cdc743c948f1e5ab99d244a270';
+const comToken = '0x4Ff930e512426BFb85B6879A6523D32ef2DFA4C2';
 const votingAggregatorAppId =
     '0xb7e96a57761ff614ad73fad84d9e7f8237911cfe4c0b4c0c2e95e5cc80fd43f3';
 
