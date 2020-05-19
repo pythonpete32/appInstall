@@ -258,7 +258,9 @@ async function secondTx() {
 }
 
 const main = async () => {
+    console.log('Generationg vote to install Voting Aggregaor')
     await firstTx();
+    console.log('Generating vote to Install Inbox Voting')
     await secondTx();
 };
 
