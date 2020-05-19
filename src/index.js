@@ -1,14 +1,11 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-shadow */
 const {encodeCallScript} = require('@aragon/test-helpers/evmScript');
 const {
     encodeActCall,
     execAppMethod,
-    getAclAddress,
 } = require('@aragon/toolkit');
 const ethers = require('ethers');
 const utils = require('ethers/utils');
-const {keccak256} = require('web3-utils'); // keccak256 gives an error when trying to encode permissions
+const {keccak256} = require('web3-utils');
 
 const {RLP} = utils;
 const provider = ethers.getDefaultProvider('rinkeby');
@@ -17,7 +14,6 @@ const BN = utils.bigNumberify;
 const env = 'rinkeby'; // this is how you set env
 
 // DAO addresses
-// https://rinkeby.aragon.org/#/azsxdc123
 const dao = '0xb92Fb39E30c874faFe068313DbF2D2A60e699643';
 const acl = '0xbb084dc9a575132946d93d1501bc1fd764dc57cc';
 const sabVoting = '0x87c303ba10cbbf64e7fe340b7fba7427f28b70d6';
@@ -58,11 +54,7 @@ async function calculateNewProxyAddress(daoAddress, nonce) {
     return contractAddress;
 }
 
-// 1. install voting aggregator
-// 2. create ADD_POWER_SOURCE_ROLE grant sabVoting managed by sabVoting
-// 3. create MANAGE_POWER_SOURCE_ROLE grant sabVoting managed by sabVoting
-// 4. create MANAGE_POWER_SOURCE_ROLE grant sabVoting managed by sabVoting
-// 5. call addPowerSource(communityToken, 1, 1)
+
 async function firstTx() {
     // counterfactual addresses
     const nonce = await buildNonceForAddress(dao, 0, provider);
@@ -105,7 +97,6 @@ async function firstTx() {
         encodeActCall(addPowerSourceSignature, [comAggregator, 1, 1]),
     ]);
 
-    // Encode all actions into a single EVM script.
     const actions = [
         {
             to: dao,
@@ -146,13 +137,7 @@ async function firstTx() {
     );
 }
 
-// 1. install voting (Inbox)
-// 2. create CREATE_VOTES_ROLE grant comAggregator managed by sabVoting
-// 3. create MODIFY_SUPPORT_ROLE grant sabVoting managed by sabVoting
-// 4. create MODIFY_QUORUM_ROLE grant sabVoting managed by sabVoting
-// 5. CREATE_VOTES_ROLE on comVoting grant inbox
 async function secondTx() {
-    // counterfactual addresses
     const nonce = await buildNonceForAddress(dao, 1, provider);
     const newAddress = await calculateNewProxyAddress(dao, nonce);
     inbox = newAddress;
@@ -168,9 +153,6 @@ async function secondTx() {
         604800,
     ]);
 
-    // package first transaction
-    // issues
-    //  1. the first encodeActCall, the last argument is true because it is a standard app?
     const calldatum = await Promise.all([
         encodeActCall(newAppInstanceSignature, [
             votingAppId,
