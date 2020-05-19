@@ -18,13 +18,12 @@ const env = 'rinkeby'; // this is how you set env
 
 // DAO addresses
 // https://rinkeby.aragon.org/#/azsxdc123
-const dao = '0x9dd734B6cE698503bb24FB2F27c9E69491E6F6C5';
-const acl = '0x3b423a82baaadabdbd2920623daf544afc1c4305';
-const sabVoting = '0x0206d6d8225893cdc743c948f1e5ab99d244a270';
-const comToken = '0x4Ff930e512426BFb85B6879A6523D32ef2DFA4C2';
-const comManager = '0x05ee4307514d9610d10897e89f6f0f25abdf8bef';
-const comVoting = '0xdeb594364932703953e9b250f57a49e0c8d64420';
-const finance = '0xf391ab2ba9380486c9dff0a23972848a4c16e23f';
+const dao = '0xb92Fb39E30c874faFe068313DbF2D2A60e699643';
+const acl = '0xbb084dc9a575132946d93d1501bc1fd764dc57cc';
+const sabVoting = '0x87c303ba10cbbf64e7fe340b7fba7427f28b70d6';
+const comAggregator = '0x753761C27aF3CB7fD4fa667245C433EC7c17d08f'; 
+const comVoting = '0x7c504Bb27dd2a5A1a4e3496Eb084fD31E43b34d2';
+const finance = '0x6a641ff46049b61f1e6c2cd20a620ecd4e2f1c8d';
 
 // new apps
 const votingAggregatorAppId =
@@ -103,6 +102,7 @@ async function firstTx() {
             keccak256('MANAGE_WEIGHTS_ROLE'),
             sabVoting,
         ]),
+        encodeActCall(addPowerSourceSignature, [comAggregator, 1, 1]),
     ]);
 
     // Encode all actions into a single EVM script.
@@ -122,6 +122,10 @@ async function firstTx() {
         {
             to: acl,
             calldata: calldatum[3],
+        },
+        {
+            to: votingAggregator,
+            calldata: calldatum[4],
         },
     ];
     const script = encodeCallScript(actions);
@@ -143,13 +147,13 @@ async function firstTx() {
 }
 
 // 1. install voting (Inbox)
-// 2. create CREATE_VOTES_ROLE grant comManager managed by sabVoting
+// 2. create CREATE_VOTES_ROLE grant comAggregator managed by sabVoting
 // 3. create MODIFY_SUPPORT_ROLE grant sabVoting managed by sabVoting
 // 4. create MODIFY_QUORUM_ROLE grant sabVoting managed by sabVoting
 // 5. CREATE_VOTES_ROLE on comVoting grant inbox
 async function secondTx() {
     // counterfactual addresses
-    const nonce = await buildNonceForAddress(dao, 0, provider);
+    const nonce = await buildNonceForAddress(dao, 1, provider);
     const newAddress = await calculateNewProxyAddress(dao, nonce);
     inbox = newAddress;
 
@@ -175,7 +179,7 @@ async function secondTx() {
             true,
         ]),
         encodeActCall(createPermissionSignature, [
-            comManager,
+            comVoting,
             inbox,
             keccak256('CREATE_VOTES_ROLE'),
             sabVoting,
@@ -212,7 +216,6 @@ async function secondTx() {
             finance,
             keccak256('EXECUTE_PAYMENTS_ROLE'),
         ]),
-        encodeActCall(addPowerSourceSignature, [comToken, 1, 1]),
     ]);
 
     // Encode all actions into a single EVM script.
@@ -249,10 +252,6 @@ async function secondTx() {
             to: acl,
             calldata: calldatum[7],
         },
-        {
-            to: votingAggregator,
-            calldata: calldatum[8],
-        },
     ];
 
     const script = encodeCallScript(actions);
@@ -264,7 +263,7 @@ async function secondTx() {
         [
             script,
             `1. install voting (Inbox)
-            2. create CREATE_VOTES_ROLE grant comManager managed by sabVoting
+            2. create CREATE_VOTES_ROLE grant comAggregator managed by sabVoting
             3. create MODIFY_SUPPORT_ROLE grant sabVoting managed by sabVoting
             4. create MODIFY_QUORUM_ROLE grant sabVoting managed by sabVoting
             5. CREATE_VOTES_ROLE on comVoting grant inbox`,
@@ -284,3 +283,4 @@ main()
         process.exit();
     })
     .catch((e) => console.error(e));
+w
