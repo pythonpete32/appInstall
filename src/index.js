@@ -283,4 +283,3 @@ main()
         process.exit();
     })
     .catch((e) => console.error(e));
-w
