@@ -26,8 +26,8 @@ const votingAggregatorAppId =
     '0xb7e96a57761ff614ad73fad84d9e7f8237911cfe4c0b4c0c2e95e5cc80fd43f3';
 const votingAggregatorBase = '0xa29B22647Dde5Cee19eF578700fEC448Bc10d951';
 const votingAppId =
-    '0x9fa3927f639745e587912d4b0fea7ef9013bf93fb907d29faeab57417ba6e1d4';
-const votingBase = '0xb4fa71b3352D48AA93D34d085f87bb4aF0cE6Ab5';
+    '0x818d8ea9df3dca764232c22548318a98f82f388b760b4b5abe80a4b40f9b2076';
+const votingBase = '0x33A981eD0B2Af893d756035DB7768d291F07460F';
 let votingAggregator;
 let inbox;
 
