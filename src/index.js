@@ -18,12 +18,12 @@ const env = 'rinkeby'; // this is how you set env
 
 // DAO addresses
 // https://rinkeby.aragon.org/#/azsxdc123
-const dao = '0x66E219ABba8a9e2dc8A476F7F47A6E8C05a42c39';
-const acl = '0xf424885567a187cc4347a1da9de8f10fbb55598e';
-const sabVoting = '0xbc9f1b8710a7d47b35ca64a178bb27664f6da771';
-const comAggregator = '0xD3E7165A226A932AbeA067747EA5C10948DfEE83';
-const comVoting = '0x60FefB64d51c35074341f930351fCfF0BaAa12C4';
-const finance = '0x7ea9fc5b74934a422442657059b87748f42d72d8';
+const dao = '0xb92Fb39E30c874faFe068313DbF2D2A60e699643';
+const acl = '0xbb084dc9a575132946d93d1501bc1fd764dc57cc';
+const sabVoting = '0x87c303ba10cbbf64e7fe340b7fba7427f28b70d6';
+const comAggregator = '0x753761C27aF3CB7fD4fa667245C433EC7c17d08f'; 
+const comVoting = '0x7c504Bb27dd2a5A1a4e3496Eb084fD31E43b34d2';
+const finance = '0x6a641ff46049b61f1e6c2cd20a620ecd4e2f1c8d';
 
 // new apps
 const votingAggregatorAppId =
@@ -153,7 +153,7 @@ async function firstTx() {
 // 5. CREATE_VOTES_ROLE on comVoting grant inbox
 async function secondTx() {
     // counterfactual addresses
-    const nonce = await buildNonceForAddress(dao, 0, provider);
+    const nonce = await buildNonceForAddress(dao, 1, provider);
     const newAddress = await calculateNewProxyAddress(dao, nonce);
     inbox = newAddress;
 
@@ -179,7 +179,7 @@ async function secondTx() {
             true,
         ]),
         encodeActCall(createPermissionSignature, [
-            comAggregator,
+            comVoting,
             inbox,
             keccak256('CREATE_VOTES_ROLE'),
             sabVoting,
