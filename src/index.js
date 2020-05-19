@@ -14,12 +14,12 @@ const BN = utils.bigNumberify;
 const env = 'rinkeby'; // this is how you set env
 
 // DAO addresses
-const dao = '0xb92Fb39E30c874faFe068313DbF2D2A60e699643';
-const acl = '0xbb084dc9a575132946d93d1501bc1fd764dc57cc';
-const sabVoting = '0x87c303ba10cbbf64e7fe340b7fba7427f28b70d6';
-const comAggregator = '0x753761C27aF3CB7fD4fa667245C433EC7c17d08f'; 
-const comVoting = '0x7c504Bb27dd2a5A1a4e3496Eb084fD31E43b34d2';
-const finance = '0x6a641ff46049b61f1e6c2cd20a620ecd4e2f1c8d';
+const dao = '0x1dcD3B94027ec9125C475E9c2e09C7B6fAFaD631';
+const acl = '0x5e8d89e1d7365267908f7d69165669eb41111596';
+const sabVoting = '0xbc1863a593aaebb40b4f43665de30174c9d3fe29';
+const comAggregator = '0xe65835cd7c9311866ae5d260a1eb7b963899ca14'; 
+const comVoting = '0x5616500b003475136ee6b0844896a2e1ccc68140';
+const finance = '0x7cd2df9217173528110e2c44eb18bd4cf0bbc601';
 
 // new apps
 const votingAggregatorAppId =
@@ -179,7 +179,7 @@ async function secondTx() {
             sabVoting,
         ]),
         encodeActCall(grantPermissionSignature, [
-            inbox,
+            votingAggregator,
             comVoting,
             keccak256('CREATE_VOTES_ROLE'),
         ]),
@@ -248,7 +248,10 @@ async function secondTx() {
             2. create CREATE_VOTES_ROLE grant comAggregator managed by sabVoting
             3. create MODIFY_SUPPORT_ROLE grant sabVoting managed by sabVoting
             4. create MODIFY_QUORUM_ROLE grant sabVoting managed by sabVoting
-            5. CREATE_VOTES_ROLE on comVoting grant inbox`,
+            5. CREATE_VOTES_ROLE on votingAggregator grant inbox
+            6. CREATE_PAYMENTS_ROLE on finance grant comVoting
+            7. EXECUTE_PAYMENTS_ROLE on finance grant comVoting
+            8. EXECUTE_PAYMENTS_ROLE on finance revoke sabVoting`,
         ],
         env,
     );
