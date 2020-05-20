@@ -14,20 +14,20 @@ const BN = utils.bigNumberify;
 const env = 'rinkeby'; // this is how you set env
 
 // DAO addresses
-const dao = '0x1dcD3B94027ec9125C475E9c2e09C7B6fAFaD631';
-const acl = '0x5e8d89e1d7365267908f7d69165669eb41111596';
-const sabVoting = '0xbc1863a593aaebb40b4f43665de30174c9d3fe29';
-const comAggregator = '0xe65835cd7c9311866ae5d260a1eb7b963899ca14'; 
-const comVoting = '0x5616500b003475136ee6b0844896a2e1ccc68140';
-const finance = '0x7cd2df9217173528110e2c44eb18bd4cf0bbc601';
+const dao = '0x12Ffd08b2cF03AEAe2758E751673F14cD9eed880';
+const acl = '0x06e28c6c5ce38315a33cbc4beb2c91688c78231d';
+const sabVoting = '0xd2492b25690bd6793affa5daff7651dc4fab7c41';
+const comAggregator = '0x836E7f5b85097f3F1B0a86Ee934A8188B469260a'; 
+const comVoting = '0xD69ba8f2fa8Ad313fEE7e9fDF00BF160ba3ac31C';
+const finance = '0x60a5979edc051c788ea41a0fb877f5d896c85c48';
 
 // new apps
 const votingAggregatorAppId =
     '0xb7e96a57761ff614ad73fad84d9e7f8237911cfe4c0b4c0c2e95e5cc80fd43f3';
 const votingAggregatorBase = '0xa29B22647Dde5Cee19eF578700fEC448Bc10d951';
 const votingAppId =
-    '0x818d8ea9df3dca764232c22548318a98f82f388b760b4b5abe80a4b40f9b2076';
-const votingBase = '0x33A981eD0B2Af893d756035DB7768d291F07460F';
+    '0x9fa3927f639745e587912d4b0fea7ef9013bf93fb907d29faeab57417ba6e1d4';
+const votingBase = '0xb4fa71b3352D48AA93D34d085f87bb4aF0cE6Ab5';
 let votingAggregator;
 let inbox;
 
@@ -128,9 +128,9 @@ async function firstTx() {
         [
             script,
             `1. install voting aggregator
-            2. create ADD_POWER_SOURCE_ROLE grant sabVoting managed by sabVoting
-            3. create MANAGE_POWER_SOURCE_ROLE grant sabVoting managed by sabVoting
-            4. create MANAGE_POWER_SOURCE_ROLE grant sabVoting managed by sabVoting
+            2. create ADD_POWER_SOURCE_ROLE on votingAggregator grant sabVoting managed by sabVoting
+            3. create MANAGE_POWER_SOURCE_ROLE on votingAggregator grant sabVoting managed by sabVoting
+            4. create MANAGE_POWER_SOURCE_ROLE on votingAggregator grant sabVoting managed by sabVoting
             5. call addPowerSource(communityToken, 1, 1)`,
         ],
         env,
@@ -161,7 +161,7 @@ async function secondTx() {
             true,
         ]),
         encodeActCall(createPermissionSignature, [
-            comVoting,
+            votingAggregator,
             inbox,
             keccak256('CREATE_VOTES_ROLE'),
             sabVoting,
@@ -179,7 +179,7 @@ async function secondTx() {
             sabVoting,
         ]),
         encodeActCall(grantPermissionSignature, [
-            votingAggregator,
+            inbox,
             comVoting,
             keccak256('CREATE_VOTES_ROLE'),
         ]),
@@ -245,13 +245,13 @@ async function secondTx() {
         [
             script,
             `1. install voting (Inbox)
-            2. create CREATE_VOTES_ROLE grant comAggregator managed by sabVoting
-            3. create MODIFY_SUPPORT_ROLE grant sabVoting managed by sabVoting
-            4. create MODIFY_QUORUM_ROLE grant sabVoting managed by sabVoting
-            5. CREATE_VOTES_ROLE on votingAggregator grant inbox
-            6. CREATE_PAYMENTS_ROLE on finance grant comVoting
-            7. EXECUTE_PAYMENTS_ROLE on finance grant comVoting
-            8. EXECUTE_PAYMENTS_ROLE on finance revoke sabVoting`,
+            2. create CREATE_VOTES_ROLE on Inbox grant comAggregator managed by sabVoting
+            3. create MODIFY_SUPPORT_ROLE on Inbox grant sabVoting managed by sabVoting
+            4. create MODIFY_QUORUM_ROLE on Inbox grant sabVoting managed by sabVoting
+            5. grant CREATE_VOTES_ROLE on votingAggregator grant inbox
+            6. grant CREATE_PAYMENTS_ROLE on finance grant comVoting
+            7. grant EXECUTE_PAYMENTS_ROLE on finance grant comVoting
+            8. remove EXECUTE_PAYMENTS_ROLE on finance revoke sabVoting`,
         ],
         env,
     );
