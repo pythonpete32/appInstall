@@ -11,12 +11,12 @@ const BN = utils.bigNumberify;
 const env = 'rinkeby';
 
 // DAO addresses
-const dao = '0x12Ffd08b2cF03AEAe2758E751673F14cD9eed880';
-const acl = '0x06e28c6c5ce38315a33cbc4beb2c91688c78231d';
-const sabVoting = '0xd2492b25690bd6793affa5daff7651dc4fab7c41';
-const comAggregator = '0x836E7f5b85097f3F1B0a86Ee934A8188B469260a';
-const comVoting = '0xD69ba8f2fa8Ad313fEE7e9fDF00BF160ba3ac31C';
-const finance = '0x60a5979edc051c788ea41a0fb877f5d896c85c48';
+const dao = '0x1dcD3B94027ec9125C475E9c2e09C7B6fAFaD631';
+const acl = '0x5e8d89e1d7365267908f7d69165669eb41111596';
+const sabVoting = '0xbc1863a593aaebb40b4f43665de30174c9d3fe29';
+const comAggregator = '0xe65835cd7c9311866ae5d260a1eb7b963899ca14';
+const comVoting = '0x5616500b003475136ee6b0844896a2e1ccc68140';
+const finance = '0x7cd2df9217173528110e2c44eb18bd4cf0bbc601';
 
 // new apps
 const votingAggregatorAppId =
