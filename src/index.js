@@ -1,29 +1,22 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-shadow */
 const {encodeCallScript} = require('@aragon/test-helpers/evmScript');
-const {
-    encodeActCall,
-    execAppMethod,
-    getAclAddress,
-} = require('@aragon/toolkit');
+const {encodeActCall, execAppMethod} = require('@aragon/toolkit');
 const ethers = require('ethers');
 const utils = require('ethers/utils');
-const {keccak256} = require('web3-utils'); // keccak256 gives an error when trying to encode permissions
+const {keccak256} = require('web3-utils');
 
 const {RLP} = utils;
 const provider = ethers.getDefaultProvider('rinkeby');
 const BN = utils.bigNumberify;
 
-const env = 'rinkeby'; // this is how you set env
+const env = 'rinkeby';
 
 // DAO addresses
-// https://rinkeby.aragon.org/#/azsxdc123
-const dao = '0xb92Fb39E30c874faFe068313DbF2D2A60e699643';
-const acl = '0xbb084dc9a575132946d93d1501bc1fd764dc57cc';
-const sabVoting = '0x87c303ba10cbbf64e7fe340b7fba7427f28b70d6';
-const comAggregator = '0x753761C27aF3CB7fD4fa667245C433EC7c17d08f'; 
-const comVoting = '0x7c504Bb27dd2a5A1a4e3496Eb084fD31E43b34d2';
-const finance = '0x6a641ff46049b61f1e6c2cd20a620ecd4e2f1c8d';
+const dao = '0x12Ffd08b2cF03AEAe2758E751673F14cD9eed880';
+const acl = '0x06e28c6c5ce38315a33cbc4beb2c91688c78231d';
+const sabVoting = '0xd2492b25690bd6793affa5daff7651dc4fab7c41';
+const comAggregator = '0x836E7f5b85097f3F1B0a86Ee934A8188B469260a';
+const comVoting = '0xD69ba8f2fa8Ad313fEE7e9fDF00BF160ba3ac31C';
+const finance = '0x60a5979edc051c788ea41a0fb877f5d896c85c48';
 
 // new apps
 const votingAggregatorAppId =
@@ -45,9 +38,9 @@ const aggregatorInitSignature = 'initialize(string,string,uint8)';
 const addPowerSourceSignature = 'addPowerSource(address,uint8,uint256)';
 
 // functions for counterfactual addresses
-async function buildNonceForAddress(address, index, provider) {
-    const txCount = await provider.getTransactionCount(address);
-    return `0x${(txCount + index).toString(16)}`;
+async function buildNonceForAddress(_address, _index, _provider) {
+    const txCount = await _provider.getTransactionCount(_address);
+    return `0x${(txCount + _index).toString(16)}`;
 }
 
 async function calculateNewProxyAddress(daoAddress, nonce) {
@@ -58,11 +51,6 @@ async function calculateNewProxyAddress(daoAddress, nonce) {
     return contractAddress;
 }
 
-// 1. install voting aggregator
-// 2. create ADD_POWER_SOURCE_ROLE grant sabVoting managed by sabVoting
-// 3. create MANAGE_POWER_SOURCE_ROLE grant sabVoting managed by sabVoting
-// 4. create MANAGE_POWER_SOURCE_ROLE grant sabVoting managed by sabVoting
-// 5. call addPowerSource(communityToken, 1, 1)
 async function firstTx() {
     // counterfactual addresses
     const nonce = await buildNonceForAddress(dao, 0, provider);
@@ -105,7 +93,6 @@ async function firstTx() {
         encodeActCall(addPowerSourceSignature, [comAggregator, 1, 1]),
     ]);
 
-    // Encode all actions into a single EVM script.
     const actions = [
         {
             to: dao,
@@ -137,22 +124,16 @@ async function firstTx() {
         [
             script,
             `1. install voting aggregator
-            2. create ADD_POWER_SOURCE_ROLE grant sabVoting managed by sabVoting
-            3. create MANAGE_POWER_SOURCE_ROLE grant sabVoting managed by sabVoting
-            4. create MANAGE_POWER_SOURCE_ROLE grant sabVoting managed by sabVoting
+            2. create ADD_POWER_SOURCE_ROLE on votingAggregator grant sabVoting managed by sabVoting
+            3. create MANAGE_POWER_SOURCE_ROLE on votingAggregator grant sabVoting managed by sabVoting
+            4. create MANAGE_POWER_SOURCE_ROLE on votingAggregator grant sabVoting managed by sabVoting
             5. call addPowerSource(communityToken, 1, 1)`,
         ],
         env,
     );
 }
 
-// 1. install voting (Inbox)
-// 2. create CREATE_VOTES_ROLE grant comAggregator managed by sabVoting
-// 3. create MODIFY_SUPPORT_ROLE grant sabVoting managed by sabVoting
-// 4. create MODIFY_QUORUM_ROLE grant sabVoting managed by sabVoting
-// 5. CREATE_VOTES_ROLE on comVoting grant inbox
 async function secondTx() {
-    // counterfactual addresses
     const nonce = await buildNonceForAddress(dao, 1, provider);
     const newAddress = await calculateNewProxyAddress(dao, nonce);
     inbox = newAddress;
@@ -168,9 +149,6 @@ async function secondTx() {
         604800,
     ]);
 
-    // package first transaction
-    // issues
-    //  1. the first encodeActCall, the last argument is true because it is a standard app?
     const calldatum = await Promise.all([
         encodeActCall(newAppInstanceSignature, [
             votingAppId,
@@ -179,7 +157,7 @@ async function secondTx() {
             true,
         ]),
         encodeActCall(createPermissionSignature, [
-            comVoting,
+            votingAggregator,
             inbox,
             keccak256('CREATE_VOTES_ROLE'),
             sabVoting,
@@ -263,17 +241,22 @@ async function secondTx() {
         [
             script,
             `1. install voting (Inbox)
-            2. create CREATE_VOTES_ROLE grant comAggregator managed by sabVoting
-            3. create MODIFY_SUPPORT_ROLE grant sabVoting managed by sabVoting
-            4. create MODIFY_QUORUM_ROLE grant sabVoting managed by sabVoting
-            5. CREATE_VOTES_ROLE on comVoting grant inbox`,
+            2. create CREATE_VOTES_ROLE on Inbox grant comAggregator managed by sabVoting
+            3. create MODIFY_SUPPORT_ROLE on Inbox grant sabVoting managed by sabVoting
+            4. create MODIFY_QUORUM_ROLE on Inbox grant sabVoting managed by sabVoting
+            5. grant CREATE_VOTES_ROLE on votingAggregator grant inbox
+            6. grant CREATE_PAYMENTS_ROLE on finance grant comVoting
+            7. grant EXECUTE_PAYMENTS_ROLE on finance grant comVoting
+            8. remove EXECUTE_PAYMENTS_ROLE on finance revoke sabVoting`,
         ],
         env,
     );
 }
 
 const main = async () => {
+    console.log('Generationg vote to install Voting Aggregaor');
     await firstTx();
+    console.log('Generating vote to Install Inbox Voting');
     await secondTx();
 };
 
@@ -282,4 +265,7 @@ main()
         console.log('Script finished.');
         process.exit();
     })
-    .catch((e) => console.error(e));
+    .catch((e) => {
+        console.error(e);
+        process.exit();
+    });
