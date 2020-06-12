@@ -20,11 +20,11 @@ const finance = '0x08cde5fec827ecad8c2ef0ed5b895ab38409dd43';
 
 // new apps
 const votingAggregatorAppId =
-    '0xb7e96a57761ff614ad73fad84d9e7f8237911cfe4c0b4c0c2e95e5cc80fd43f3';
-const votingAggregatorBase = '0xa29B22647Dde5Cee19eF578700fEC448Bc10d951';
+    '0x818d8ea9df3dca764232c22548318a98f82f388b760b4b5abe80a4b40f9b2076';
+const votingAggregatorBase = '0x21535ee4467f8abc3a2be4ae5fa80b1891805665';
 const votingAppId =
     '0x9fa3927f639745e587912d4b0fea7ef9013bf93fb907d29faeab57417ba6e1d4';
-const votingBase = '0xb4fa71b3352D48AA93D34d085f87bb4aF0cE6Ab5';
+const votingBase = '0xb935c3d80229d5d92f3761b17cd81dc2610e3a45';
 let votingAggregator;
 let inbox;
 
@@ -254,7 +254,7 @@ async function secondTx() {
 }
 
 const main = async () => {
-    console.log('Generationg vote to install Voting Aggregaor');
+    console.log('Generating vote to install Voting Aggregaor');
     await firstTx();
     console.log('Generating vote to Install Inbox Voting');
     await secondTx();
